@@ -9,7 +9,7 @@
     "dev": "nodemon --inspect ./index.js",
     "prettier": "prettier --write \"*.js\""
   },
-  "author": "",
+  "author": "Kenny Lavender",
   "license": "ISC",
   "dependencies": {
     "cuid": "2.1.6",
