@@ -1,6 +1,7 @@
 const net = require("net");
 const readline = require("readline");
 const prettyjson = require("prettyjson");
+const cuid = require("cuid");
 
 const pipe = (...fns) => x => fns.reduce((acc, cur) => cur(acc), x);
 
@@ -14,6 +15,7 @@ const createClient = ({
   let socket;
   let buffered = "";
   let heartbeatTimeout;
+  let requests = {};
 
   const userInput = readline.createInterface({
     input,
@@ -21,10 +23,26 @@ const createClient = ({
   });
 
   const sendStrToServer = str => socket.write(Buffer.from(`${str}\n`, "utf8"));
-  
+
   const sendJsonToServer = pipe(
     JSON.stringify,
     sendStrToServer
+  );
+
+  const makeRequest = obj => {
+    const id = cuid();
+    return Object.assign({}, obj, { id });
+  };
+
+  const storeRequest = req => {
+    requests[req.id] = req;
+    return req;
+  };
+
+  const sendRequestToServer = pipe(
+    makeRequest,
+    storeRequest,
+    sendJsonToServer
   );
 
   const renderUserMessage = str => output.write(`\n${str}\n`);
@@ -32,7 +50,7 @@ const createClient = ({
   const handleUserInput = data => {
     try {
       const json = JSON.parse(data);
-      sendJsonToServer(json);
+      sendRequestToServer(json);
       userInput.prompt();
     } catch {
       renderUserMessage("Input must be valid JSON");
@@ -58,17 +76,36 @@ const createClient = ({
     );
   };
 
-  const renderServerResponse = (data) => {
+  const renderServerResponse = data => {
     renderUserMessage(prettyjson.render(data));
+  };
+
+  const isMessageFromThisClient = id => !!requests[id];
+
+  const validMessage = data =>
+    data.msg && data.msg.reply && isMessageFromThisClient(data.msg.reply);
+
+  const handleMessage = data => {
+    if (validMessage(data)) {
+      renderServerResponse(data);
+      if (data.msg.random > 30) renderUserMessage("Random was larger than 30");
+      userInput.prompt();
+    }
   };
 
   const handleServerResponse = str => {
     try {
       const data = JSON.parse(str);
-      if (data.type === "heartbeat") return heartbeat();
-      if (data.type === "welcome") return loginSuccess(data)
-      renderServerResponse(data);
-      userInput.prompt();
+      switch (data.type) {
+        case "heartbeat":
+          return heartbeat();
+        case "welcome":
+          return loginSuccess(data);
+        case "msg":
+          return handleMessage(data);
+        default:
+          return;
+      }
     } catch {
       renderUserMessage("Invalid server response");
       userInput.prompt();
@@ -92,7 +129,7 @@ const createClient = ({
   const loginSuccess = ({ msg }) => {
     renderUserMessage(msg);
     userInput.prompt();
-  }
+  };
 
   const login = () => {
     renderUserMessage("Logging in...");
@@ -102,13 +139,12 @@ const createClient = ({
   const handleConnectionReady = () => {
     renderUserMessage("Connected!");
     login();
-    
   };
 
-  const handleSocketError = (err) => {
+  const handleSocketError = err => {
     console.error(err);
     process.exit(1);
-  }
+  };
 
   const createNewSocket = () => {
     renderUserMessage("Connecting...");
@@ -116,13 +152,13 @@ const createClient = ({
 
     socket.on("ready", handleConnectionReady);
     socket.on("data", handleServerStream);
-    socket.on('error', handleSocketError);
+    socket.on("error", handleSocketError);
   };
 
   const cleanupSocket = () => {
     socket.off("ready", handleConnectionReady);
     socket.off("data", handleServerStream);
-    socket.off('error', handleSocketError);
+    socket.off("error", handleSocketError);
   };
 
   createNewSocket();
