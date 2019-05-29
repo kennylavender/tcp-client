@@ -12,8 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "1.19.1",
-    "prettier": "^1.17.1",
+    "cuid": "2.1.6",
     "prettyjson": "1.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "1.19.1",
+    "prettier": "1.17.1",
+    "tape": "4.10.2"
   }
 }
