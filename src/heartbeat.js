@@ -1,34 +1,32 @@
-const createHeartbeatTimeout = ({ timeoutInMiliseconds = 2000, timeoutCallback }) => {
+const EventEmitter = require("events");
+const HEARTBEAT_TIMED_OUT = "heartbeat::timed_out";
+
+const createHeartbeatTimeout = ({ timeoutInMiliseconds = 2000 }) => {
+  const emitter = new EventEmitter();
   let timeout;
 
   const handleTimeout = () => {
-    timeoutCallback();
-  }
+    emitter.emit(HEARTBEAT_TIMED_OUT);
+  };
 
-  const push = (data) => {
-    if (data.type === 'heartbeat') {
+  const push = data => {
+    if (data.type === "heartbeat") {
       clearTimeout(timeout);
-      timeout = setTimeout(
-        handleTimeout,
-        timeoutInMiliseconds
-      );
+      timeout = setTimeout(handleTimeout, timeoutInMiliseconds);
     }
   };
 
   const start = () => {
-    timeout = setTimeout(
-      handleTimeout,
-      timeoutInMiliseconds
-    );
-  }
+    timeout = setTimeout(handleTimeout, timeoutInMiliseconds);
+  };
 
-  return {
+  return Object.assign(emitter, {
     start,
-    push,
-  }
+    push
+  });
 };
 
-
 module.exports = {
-  createHeartbeatTimeout,
+  HEARTBEAT_TIMED_OUT,
+  createHeartbeatTimeout
 };
