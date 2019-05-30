@@ -1,5 +1,5 @@
 const {
-  createConnection,
+  createSocket,
   SOCKET_CONNECTING,
   SOCKET_READY,
   SOCKET_RECONNECTING,
@@ -13,8 +13,9 @@ const cuid = require("cuid");
 
 const createClient = ({ port, host }) => {
   const ui = createUI();
-  const socket = createConnection({ port, host });
+  const socket = createSocket({ port, host });
 
+  // todo, move requests logic to another module
   const requests = {};
 
   const makeRequest = obj => Object.assign({}, obj, { id: cuid() });
@@ -42,17 +43,17 @@ const createClient = ({ port, host }) => {
 
   const onSocketReady = () => {
     ui.writeMessage("Ready! Logging in...");
-    socket.sendJson({ "name": "kenny" });
+    socket.sendJson({ name: "kenny" });
   };
 
   const onSocketHeartbeatTimeout = () => {
     ui.writeMessage("Heartbeat timed out...");
   };
 
-  const onSocketError = (err) => {
+  const onSocketError = err => {
     console.log(err);
     process.exit(1);
-  }
+  };
 
   const onSocketRecievedResponse = data => {
     if (
@@ -71,6 +72,8 @@ const createClient = ({ port, host }) => {
       ui.prompt();
     }
   };
+
+  console.log(SOCKET_ERROR);
 
   ui.on(UI_USER_INPUT, onUserInput);
   socket.on(SOCKET_CONNECTING, onSocketConnecting);

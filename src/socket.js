@@ -15,7 +15,7 @@ const SOCKET_READY = "SOCKET_READY";
 const SOCKET_HEARTBEAT_TIMEOUT = "SOCKET_HEARTBEAT_TIMEOUT";
 const SOCKET_ERROR = "SOCKET_ERROR";
 
-const createConnection = ({ port, host }) => {
+const createSocket = ({ port, host }) => {
   const emitter = new EventEmitter();
   let socket;
   const heartbeatTimeout = createHeartbeatTimeout({
@@ -50,20 +50,19 @@ const createConnection = ({ port, host }) => {
     heartbeatTimeout.start();
   };
 
-  const handleError = (err) => {
+  const handleError = err => {
     emitter.emit(SOCKET_ERROR, err);
-    console.log(err);
   };
 
   const handleTimeout = () => {
-    emitter.emit(SOCKET_TIMEOUT)
-  }
+    emitter.emit(SOCKET_TIMEOUT);
+  };
 
   const attachListeners = () => {
     socket.on("ready", handleReady);
     socket.on("data", handleData);
     socket.on("error", handleError);
-    socket.on('timeout', handleTimeout);
+    socket.on("timeout", handleTimeout);
     socket.on("close", removeListeners);
     socket.on("end", removeListeners);
   };
@@ -72,7 +71,7 @@ const createConnection = ({ port, host }) => {
     socket.off("ready", handleReady);
     socket.off("data", handleData);
     socket.off("error", handleError);
-    socket.off('timeout', handleTimeout);
+    socket.off("timeout", handleTimeout);
     socket.off("close", removeListeners);
     socket.off("end", removeListeners);
   };
@@ -84,7 +83,7 @@ const createConnection = ({ port, host }) => {
     } catch (e) {
       console.log(e);
     }
-    socket.setTimeout(5000)
+    socket.setTimeout(5000);
     attachListeners();
   };
 
@@ -103,10 +102,11 @@ const createConnection = ({ port, host }) => {
 };
 
 module.exports = {
-  createConnection,
+  createSocket,
   SOCKET_CONNECTING,
   SOCKET_READY,
   SOCKET_RECONNECTING,
   SOCKET_HEARTBEAT_TIMEOUT,
-  SOCKET_RECIEVED_RESPONSE
+  SOCKET_RECIEVED_RESPONSE,
+  SOCKET_ERROR
 };
