@@ -4,11 +4,12 @@ const {
   SOCKET_READY,
   SOCKET_RECONNECTING,
   SOCKET_HEARTBEAT_TIMEOUT,
-  SOCKET_RECIEVED_RESPONSE
+  SOCKET_RECIEVED_RESPONSE,
+  SOCKET_ERROR
 } = require("./socket");
 const { createUI, UI_USER_INPUT } = require("./ui");
 const { pipe } = require("ramda");
-const cuid = require('cuid');
+const cuid = require("cuid");
 
 const createClient = ({ port, host }) => {
   const ui = createUI();
@@ -41,14 +42,19 @@ const createClient = ({ port, host }) => {
 
   const onSocketReady = () => {
     ui.writeMessage("Ready! Logging in...");
-    socket.sendJson({ name: "kenny" });
+    socket.sendJson({ "name": "kenny" });
   };
 
   const onSocketHeartbeatTimeout = () => {
     ui.writeMessage("Heartbeat timed out...");
   };
 
-  const onSocketRecievedResponse = (data) => {
+  const onSocketError = (err) => {
+    console.log(err);
+    process.exit(1);
+  }
+
+  const onSocketRecievedResponse = data => {
     if (
       data.type === "msg" &&
       data.msg &&
@@ -69,12 +75,13 @@ const createClient = ({ port, host }) => {
   ui.on(UI_USER_INPUT, onUserInput);
   socket.on(SOCKET_CONNECTING, onSocketConnecting);
   socket.on(SOCKET_READY, onSocketReady);
+  socket.on(SOCKET_ERROR, onSocketError);
   socket.on(SOCKET_RECONNECTING, onSocketReconnecting);
   socket.on(SOCKET_HEARTBEAT_TIMEOUT, onSocketHeartbeatTimeout);
   socket.on(SOCKET_RECIEVED_RESPONSE, onSocketRecievedResponse);
   socket.on(SOCKET_RECIEVED_RESPONSE, watchForLoginSuccess);
 
-  socket.connect()
+  socket.connect();
 };
 
 module.exports = createClient;
