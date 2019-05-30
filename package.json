@@ -15,7 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "cuid": "2.1.6",
-    "prettyjson": "1.2.1"
+    "prettyjson": "1.2.1",
+    "ramda": "^0.26.1"
   },
   "devDependencies": {
     "nodemon": "1.19.1",
