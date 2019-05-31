@@ -34,3 +34,4 @@ This branch holds my original expirementation code that I created to get a good 
 - Missing non-happy path tests.
 - Adjust package.json scripts to work on windows.
 - Add linting
+- auth logic should go in its own module.
