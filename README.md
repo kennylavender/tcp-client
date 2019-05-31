@@ -20,7 +20,7 @@ This branch might be working, but I am unsure as I started having connection iss
 
 ### initial-working
 
-This branch holds my original expirementation code that I created to get a good grasp of the requirements and components. The module does more than one thing is very coupled together and has no tests.
+This branch holds my original expirementation code that I created to get a good grasp of the requirements and required logic. The module does more than one thing and has logic that needs to be extracted and tested.
 
 ## Todo
 
