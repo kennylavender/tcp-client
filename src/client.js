@@ -8,7 +8,7 @@ const {
   SOCKET_ERROR
 } = require("./socket");
 const { createUI, UI_USER_INPUT } = require("./ui");
-const { pipe } = require("ramda");
+const { pipe, view, lensPath } = require("ramda");
 const cuid = require("cuid");
 
 const createClient = ({ port, host }) => {
@@ -55,18 +55,20 @@ const createClient = ({ port, host }) => {
     process.exit(1);
   };
 
-  const onSocketRecievedResponse = data => {
+  const handleMessageData = data => {
     if (
       data.type === "msg" &&
-      data.msg &&
-      data.msg.reply &&
-      requestExistsById(data.msg.reply)
+      requestExistsById(view(lensPath(['msg', 'reply'])))
     ) {
+      if (view(lensPath(['msg', 'ramdom'])) > 30) {
+        ui.writeMessage('Random value is higher than 30');
+      }
       ui.writeJson(data);
+      ui.prompt();
     }
   };
 
-  const watchForLoginSuccess = data => {
+  const handleLoginSuccessData = data => {
     if (data.type === "welcome") {
       ui.writeMessage(data.msg);
       ui.prompt();
@@ -79,8 +81,8 @@ const createClient = ({ port, host }) => {
   socket.on(SOCKET_ERROR, onSocketError);
   socket.on(SOCKET_RECONNECTING, onSocketReconnecting);
   socket.on(SOCKET_HEARTBEAT_TIMEOUT, onSocketHeartbeatTimeout);
-  socket.on(SOCKET_RECIEVED_RESPONSE, onSocketRecievedResponse);
-  socket.on(SOCKET_RECIEVED_RESPONSE, watchForLoginSuccess);
+  socket.on(SOCKET_RECIEVED_RESPONSE, handleMessageData);
+  socket.on(SOCKET_RECIEVED_RESPONSE, handleLoginSuccessData);
 
   socket.connect();
 };

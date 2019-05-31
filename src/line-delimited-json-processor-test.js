@@ -1,7 +1,7 @@
 const test = require("tape");
-const { createResponseProcessor } = require("./processor");
+const createLineDelimitedJsonProcessor = require("./line-delimited-json-parser");
 
-test("responseProcessor", t => {
+test("lineDelimitedJsonProcessor", t => {
   {
     let values = [];
     let errors = [];
@@ -11,9 +11,11 @@ test("responseProcessor", t => {
       if (data) values.push(data);
     };
 
-    const responseProcessor = createResponseProcessor(callback);
+    const lineDelimitedJsonProcessor = createLineDelimitedJsonProcessor(
+      callback
+    );
 
-    const stream = [
+    const inputChunks = [
       '{ "name": "foo" }',
       "\n",
       "{ baz: \n",
@@ -24,25 +26,25 @@ test("responseProcessor", t => {
       ' "count" }\n"'
     ];
 
-    const expectedValues = [
+    const expectedChunks = [
       { name: "foo" },
       { request: "time" },
       {},
       { request: "count" }
     ];
 
-    stream.forEach(responseProcessor);
+    inputChunks.forEach(lineDelimitedJsonProcessor);
 
     t.deepEqual(
       values,
-      expectedValues,
-      "given valid stream data; it should callback with the data of the correct chunks"
+      expectedChunks,
+      "given valid inputChunks data; it should callback with the data of the correct chunks"
     );
 
     t.deepEqual(
       errors.length,
       2,
-      "given invalid stream data; it should callback errors for the correct chunks"
+      "given invalid inputChunks data; it should callback errors for the correct chunks"
     );
   }
   t.end();

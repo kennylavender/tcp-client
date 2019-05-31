@@ -1,4 +1,4 @@
-const createResponseProcessor = callback => {
+const createLineDelimitedJsonProcessor = callback => {
   let buffered = "";
   return data => {
     buffered += data;
@@ -16,6 +16,4 @@ const createResponseProcessor = callback => {
   };
 };
 
-module.exports = {
-  createResponseProcessor
-};
+module.exports = createLineDelimitedJsonProcessor;

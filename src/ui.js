@@ -12,7 +12,7 @@ const createUI = ({ output = process.stdout, input = process.stdin } = {}) => {
   });
 
   const writeMessage = str => output.write(`\n${str}\n`);
-  const writeJson = json => renderMessage(prettyjson.render(json));
+  const writeJson = json => writeMessage(prettyjson.render(json));
 
   const onLine = line => {
     try {

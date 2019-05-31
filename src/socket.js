@@ -4,7 +4,7 @@ const {
   createHeartbeatTimeout,
   HEARTBEAT_TIMED_OUT
 } = require("./heartbeat.js");
-const { createResponseProcessor } = require("./processor.js");
+const createLineDelimitedJsonProcessor = require("./line-delimited-json-processor.js");
 const { pipe } = require("ramda");
 
 const SOCKET_CONNECTING = "SOCKET_CONNECTING";
@@ -41,7 +41,7 @@ const createSocket = ({ port, host }) => {
     emitter.emit(SOCKET_RECIEVED_RESPONSE, data);
   };
 
-  const handleData = createResponseProcessor((err, data) => {
+  const handleData = createLineDelimitedJsonProcessor((err, data) => {
     if (!err) handleResponse(data);
   });
 
@@ -91,7 +91,7 @@ const createSocket = ({ port, host }) => {
     emitter.emit(SOCKET_RECONNECTING);
     socket.end(() => {
       removeListeners();
-      connect();
+      setTimeout(connect, 2000);
     });
   };
 
