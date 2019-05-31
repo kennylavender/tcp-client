@@ -73,8 +73,6 @@ const createClient = ({ port, host }) => {
     }
   };
 
-  console.log(SOCKET_ERROR);
-
   ui.on(UI_USER_INPUT, onUserInput);
   socket.on(SOCKET_CONNECTING, onSocketConnecting);
   socket.on(SOCKET_READY, onSocketReady);
