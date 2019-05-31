@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test-unit && npm run test-integration",
     "test-unit": "tape \"src/**/*-test.js\"",
     "test-integration": "tape \"integration-tests/**/*-test.js\"",
     "start": "node ./index.js",
