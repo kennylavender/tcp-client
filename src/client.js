@@ -58,12 +58,12 @@ const createClient = ({ port, host }) => {
   const handleMessageData = data => {
     if (
       data.type === "msg" &&
-      requestExistsById(view(lensPath(['msg', 'reply']), data))
+      requestExistsById(view(lensPath(["msg", "reply"]), data))
     ) {
-      ui.writeJson(omit(['reply', 'random'], data.msg));
-      
-      if (view(lensPath(['msg', 'random']), data) > 30) {
-        ui.writeMessage('Random value is higher than 30');
+      ui.writeJson(omit(["reply", "random"], data.msg));
+
+      if (view(lensPath(["msg", "random"]), data) > 30) {
+        ui.writeMessage("Random value is higher than 30");
       }
 
       ui.prompt();
