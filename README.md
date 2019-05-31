@@ -7,6 +7,10 @@
 
 ## Test
 
+- `npm run test`
+
+or 
+
 - `npm run test-unit`
 - `npm run test-integration`
 
