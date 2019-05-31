@@ -24,6 +24,6 @@ This branch holds my original expirementation code that I created to get a good 
 
 ## Todo
 
-- More decoupling and testing around requests and response filtering.
+- Move requests and response filtering logic into a seperate module with tests.
 - Some end to end tests, maybe mock stdin/stdout?
 - Investigate a better composition of components? Can we use stream `.pipe` to get rid of some of the logic in the event handlers?
