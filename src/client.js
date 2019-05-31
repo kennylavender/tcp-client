@@ -8,7 +8,7 @@ const {
   SOCKET_ERROR
 } = require("./socket");
 const { createUI, UI_USER_INPUT } = require("./ui");
-const { pipe, view, lensPath } = require("ramda");
+const { pipe, view, lensPath, omit } = require("ramda");
 const cuid = require("cuid");
 
 const createClient = ({ port, host }) => {
@@ -58,12 +58,14 @@ const createClient = ({ port, host }) => {
   const handleMessageData = data => {
     if (
       data.type === "msg" &&
-      requestExistsById(view(lensPath(['msg', 'reply'])))
+      requestExistsById(view(lensPath(['msg', 'reply']), data))
     ) {
-      if (view(lensPath(['msg', 'ramdom'])) > 30) {
+      ui.writeJson(omit(['reply', 'random'], data.msg));
+      
+      if (view(lensPath(['msg', 'random']), data) > 30) {
         ui.writeMessage('Random value is higher than 30');
       }
-      ui.writeJson(data);
+
       ui.prompt();
     }
   };
