@@ -33,3 +33,4 @@ This branch holds my original expirementation code that I created to get a good 
 - Investigate a better composition of components? Can we use stream `.pipe` to improve composition?
 - Missing non-happy path tests.
 - Adjust package.json scripts to work on windows.
+- Add linting
