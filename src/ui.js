@@ -1,6 +1,5 @@
 const EventEmitter = require("events");
 const readline = require("readline");
-const prettyjson = require("prettyjson");
 
 const UI_USER_INPUT = "UI::USER_INPUT";
 
@@ -12,7 +11,6 @@ const createUI = ({ output = process.stdout, input = process.stdin } = {}) => {
   });
 
   const writeMessage = str => output.write(`\n${str}\n`);
-  const writeJson = json => writeMessage(prettyjson.render(json));
 
   const onLine = line => {
     try {
@@ -33,8 +31,7 @@ const createUI = ({ output = process.stdout, input = process.stdin } = {}) => {
 
   return Object.assign(emitter, {
     prompt,
-    writeMessage,
-    writeJson
+    writeMessage
   });
 };
 
