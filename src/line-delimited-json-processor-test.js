@@ -1,5 +1,5 @@
 const test = require("tape");
-const createLineDelimitedJsonProcessor = require("./line-delimited-json-parser");
+const createLineDelimitedJsonProcessor = require("./line-delimited-json-processor.js");
 
 test("lineDelimitedJsonProcessor", t => {
   {
