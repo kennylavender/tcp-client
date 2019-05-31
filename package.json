@@ -6,6 +6,7 @@
   "scripts": {
     "test": "npm run test-unit && npm run test-integration",
     "test-unit": "tape \"src/**/*-test.js\"",
+    "test-unit-watch": "watch 'npm run test-unit' src",
     "test-integration": "tape \"integration-tests/**/*-test.js\"",
     "start": "node ./index.js",
     "dev": "nodemon --inspect ./index.js",
