@@ -1,4 +1,4 @@
-# Kenny Lavender - help.com test
+# Kenny Lavender - Coding Challenge
 
 ## Run
 
