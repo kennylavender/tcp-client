@@ -8,28 +8,16 @@ const {
   SOCKET_ERROR
 } = require("./socket");
 const { createUI, UI_USER_INPUT } = require("./ui");
-const { pipe, view, lensPath, omit } = require("ramda");
-const cuid = require("cuid");
+const { pipe, view, lensPath, omit, isNil } = require("ramda");
+const { createRequestManager, getRequestIdFromResponse, formatCountResponse, formatTimeResponse } = require('./requests');
 
 const createClient = ({ port, host }) => {
   const ui = createUI();
   const socket = createSocket({ port, host });
-
-  // todo, move requests logic to another module
-  const requests = {};
-
-  const makeRequest = obj => Object.assign({}, obj, { id: cuid() });
-
-  const storeRequest = req => {
-    requests[req.id] = req;
-    return req;
-  };
-
-  const requestExistsById = id => !!requests[id];
+  const requestManager = createRequestManager();
 
   const onUserInput = pipe(
-    makeRequest,
-    storeRequest,
+    requestManager.push,
     socket.sendJson
   );
 
@@ -55,18 +43,27 @@ const createClient = ({ port, host }) => {
     process.exit(1);
   };
 
+  const renderCountResponse = (response) => {
+    ui.writeMessage(formatCountResponse(response));
+    ui.prompt();
+  }
+
+  const renderTimeResponse = (response) => {
+    ui.writeMessage(formatTimeResponse(response));
+    ui.prompt()
+  }
+
   const handleMessageData = data => {
-    if (
-      data.type === "msg" &&
-      requestExistsById(view(lensPath(["msg", "reply"]), data))
-    ) {
-      ui.writeJson(omit(["reply", "random"], data.msg));
-
-      if (view(lensPath(["msg", "random"]), data) > 30) {
-        ui.writeMessage("Random value is higher than 30");
+    if (data.type === 'msg') {
+      const type = requestManager.getRequestTypeById(getRequestIdFromResponse(data));
+      switch(type) {
+        case "count":
+          return renderCountResponse(data);
+        case "time":
+            return renderTimeResponse(data);
+        default:
+          return;
       }
-
-      ui.prompt();
     }
   };
 

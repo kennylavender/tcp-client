@@ -25,7 +25,18 @@ const getRequestIdFromResponse = (response) => {
   return is(String, value) ? value : undefined;
 };
 
+const formatTimeResponse = (response) => {
+  const time = view(lensPath(['msg', 'time']), response);
+  const randomNumber = view(lensPath(['msg', 'random']), response);
+  return `Time: ${time}${randomNumber > 30 ? '\n\x1b[33mNumber is greater than 30!\x1b[0m' : ''}`
+};
+
+const formatCountResponse = (response) => `Count: ${view(lensPath(['msg', 'count']), response)}`;
+
+
 module.exports = {
   createRequestManager,
-  getRequestIdFromResponse
+  getRequestIdFromResponse,
+  formatTimeResponse,
+  formatCountResponse
 };

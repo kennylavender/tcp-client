@@ -1,7 +1,9 @@
 const test = require("tape");
 const {
   createRequestManager,
-  getRequestIdFromResponse
+  getRequestIdFromResponse,
+  formatTimeResponse,
+  formatCountResponse
 } = require("./requests");
 
 test("requestManager", t => {
@@ -78,10 +80,30 @@ test("getRequestIdFromResponse", t => {
   t.end();
 });
 
-// test('getResponse', t => {
+test('formatTimeResponse', t => {
 
-// })
+  t.deepEqual(
+    formatTimeResponse({ msg: { time: 'Monday', random: 29 }}),
+    'Time: Monday',
+    'given a time response and random is below 30, should return the correct output string'
+  )
 
-// test('renderCountRequest', t => {
+  t.deepEqual(
+    formatTimeResponse({ msg: { time: 'Monday', random: 31 }}),
+    'Time: Monday\n\x1b[33mNumber is greater than 30!\x1b[0m',
+    'given a random number is greater than 30, should return the correct output string with a number notice'
+  )
 
-// })
+  t.end()
+})
+
+test('formatCountResponse', t => {
+
+  t.deepEqual(
+    formatCountResponse({ msg: { count: 3 }}),
+    'Count: 3',
+    'given a count response, should return the correct output string'
+  )
+
+  t.end()
+})
