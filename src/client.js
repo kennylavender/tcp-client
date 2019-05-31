@@ -8,8 +8,13 @@ const {
   SOCKET_ERROR
 } = require("./socket");
 const { createUI, UI_USER_INPUT } = require("./ui");
-const { pipe, view, lensPath, omit, isNil } = require("ramda");
-const { createRequestManager, getRequestIdFromResponse, formatCountResponse, formatTimeResponse } = require('./requests');
+const { pipe } = require("ramda");
+const {
+  createRequestManager,
+  getRequestIdFromResponse,
+  formatCountResponse,
+  formatTimeResponse
+} = require("./requests");
 
 const createClient = ({ port, host }) => {
   const ui = createUI();
@@ -43,24 +48,26 @@ const createClient = ({ port, host }) => {
     process.exit(1);
   };
 
-  const renderCountResponse = (response) => {
+  const renderCountResponse = response => {
     ui.writeMessage(formatCountResponse(response));
     ui.prompt();
-  }
+  };
 
-  const renderTimeResponse = (response) => {
+  const renderTimeResponse = response => {
     ui.writeMessage(formatTimeResponse(response));
-    ui.prompt()
-  }
+    ui.prompt();
+  };
 
   const handleMessageData = data => {
-    if (data.type === 'msg') {
-      const type = requestManager.getRequestTypeById(getRequestIdFromResponse(data));
-      switch(type) {
+    if (data.type === "msg") {
+      const type = requestManager.getRequestTypeById(
+        getRequestIdFromResponse(data)
+      );
+      switch (type) {
         case "count":
           return renderCountResponse(data);
         case "time":
-            return renderTimeResponse(data);
+          return renderTimeResponse(data);
         default:
           return;
       }
