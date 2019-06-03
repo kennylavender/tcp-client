@@ -1,6 +1,6 @@
 # TCP Client
 
-A line delimited json based tcp client.
+A line delimited json, command line based tcp client.
 
 ## Run
 - Copy `.env-example` to `.env` and set real values.
