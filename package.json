@@ -13,7 +13,8 @@
     "prettier": "prettier --write \"**/*.js\""
   },
   "author": "Kenny Lavender",
-  "license": "ISC",
+  "license": "UNLICENSED",
+  "private": true,
   "dependencies": {
     "cuid": "2.1.6",
     "dotenv": "^8.0.0",
