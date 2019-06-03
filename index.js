@@ -1,6 +1,6 @@
 const createClient = require("./src/client");
+const { withSocketConfig } = require("./src/socket-config");
 
-const host = "35.226.214.55";
-const port = 9432;
+const config = withSocketConfig(process.env)({});
 
-createClient({ port, host });
+createClient(config);

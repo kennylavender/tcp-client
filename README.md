@@ -1,7 +1,7 @@
 # Kenny Lavender - Coding Challenge
 
 ## Run
-
+- Copy `.env-example` to `.env` and set real values.
 - `npm install`
 - `npm start`
 

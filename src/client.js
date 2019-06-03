@@ -16,9 +16,9 @@ const {
   formatTimeResponse
 } = require("./requests");
 
-const createClient = ({ port, host }) => {
+const createClient = config => {
   const ui = createUI();
-  const socket = createSocket({ port, host });
+  const socket = createSocket(config.socket);
   const requestManager = createRequestManager();
 
   const onUserInput = pipe(
