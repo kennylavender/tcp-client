@@ -51,8 +51,6 @@ test("requestManager", t => {
 });
 
 test("getRequestIdFromResponse", t => {
-  const requestManager = createRequestManager();
-
   t.deepEqual(
     getRequestIdFromResponse(null),
     undefined,
