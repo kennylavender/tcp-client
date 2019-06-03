@@ -8,14 +8,15 @@
     "test-unit": "tape \"src/**/*-test.js\"",
     "test-unit-watch": "watch 'npm run test-unit' src",
     "test-integration": "tape \"integration-tests/**/*-test.js\"",
-    "start": "node ./index.js",
-    "dev": "nodemon --inspect ./index.js",
+    "start": "node -r dotenv/config ./index.js",
+    "dev": "nodemon --inspect -r dotenv/config ./index.js",
     "prettier": "prettier --write \"**/*.js\""
   },
   "author": "Kenny Lavender",
   "license": "ISC",
   "dependencies": {
     "cuid": "2.1.6",
+    "dotenv": "^8.0.0",
     "ramda": "0.26.1"
   },
   "devDependencies": {
